@@ -1,0 +1,45 @@
+Phrases
+The name of the promoter with the identifier of RegulonBB database RDBECOLIPMC02741 is C0293p
+The promoter C0293p is located in the forward strand of the genome of Escherichia coli K-12
+The promoter C0293p of Escherichia coli K-12 has the reference 32061118
+The Transcription Start Site (TSS) of the promoter C0293p of Escherichia coli K-12 is located at genome position 1196711
+The promoter C0293p of Escherichia coli K-12 has the evidence 'Transcription initiation mapping' linked to the reference 32061118
+The -10 and -35 boxes of the C0293p of Escherichia coli K-12 has the evidence 'Transcription initiation mapping'
+The promoter C0293p of Escherichia coli K-12 has the reference 32061118
+The Transcription Start Site (TSS) of the promoter C0293p of Escherichia coli K-12 is located at genome position 1196711
+The promoter C0293p of Escherichia coli K-12 has a TSS located at 0 relative position from the gene C0293
+The promoter C0293p of Escherichia coli K-12 has a TSS at a T nucleotide
+The sequence of the promoter C0293p of Escherichia coli K-12 is tatgaattaccactccttacacccgctcaaatattgttaaattgccggttttgtatcaacTactcacccgggactcgccag
+The transcription of the transcription unit (TU) C0293 is started at the promoter C0293p of Escherichia coli K-12
+The transcription of the gene C0293 is started at the promoter C0293p of Escherichia coli K-12
+The name of the promoter with the identifier of RegulonBB database RDBECOLIPMC00566 is aaeRp
+The promoter aaeRp is located in the forward strand of the genome of Escherichia coli K-12
+The promoter aaeRp of Escherichia coli K-12 has the reference 21460078
+The Transcription Start Site (TSS) of the promoter aaeRp of Escherichia coli K-12 is located at genome position 3389496
+The promoter aaeRp of Escherichia coli K-12 has the evidence 'High-throughput transcription initiation mapping' linked to the reference 21460078
+The -10 and -35 boxes of the aaeRp of Escherichia coli K-12 has the evidence 'High-throughput transcription initiation mapping'
+The promoter aaeRp of Escherichia coli K-12 has the reference 21460078
+The Transcription Start Site (TSS) of the promoter aaeRp of Escherichia coli K-12 is located at genome position 3389496
+The promoter aaeRp of Escherichia coli K-12 has a TSS located at 24 relative position from the gene aaeR
+The promoter aaeRp of Escherichia coli K-12 has a TSS at a A nucleotide
+The sequence of the promoter aaeRp of Escherichia coli K-12 is agattgatatttaatatattagcgtaactgttatgctgttatctatattatgtgatctaaAtcacttttaagtcagagtga
+The transcription of the transcription unit (TU) aaeR is started at the promoter aaeRp of Escherichia coli K-12
+The transcription of the gene aaeR is started at the promoter aaeRp of Escherichia coli K-12
+The transcription factor CRP binds at positions -2.5 relative to the transcriptional start site of the promoter aaeRp of Escherichia coli K-12 to repressor it
+The transcription factor CRP represses the transcription of the promoter aaeRp of Escherichia coli K-12
+The name of the promoter with the identifier of RegulonBB database RDBECOLIPMC00565 is aaeXp
+The promoter aaeXp is located in the reverse strand of the genome of Escherichia coli K-12
+The promoter aaeXp of Escherichia coli K-12 has the reference 21460078
+The Transcription Start Site (TSS) of the promoter aaeXp of Escherichia coli K-12 is located at genome position 3389430
+The promoter aaeXp of Escherichia coli K-12 has the evidence 'High-throughput transcription initiation mapping' linked to the reference 21460078
+The -10 and -35 boxes of the aaeXp of Escherichia coli K-12 has the evidence 'High-throughput transcription initiation mapping'
+The promoter aaeXp of Escherichia coli K-12 has the reference 21460078
+The Transcription Start Site (TSS) of the promoter aaeXp of Escherichia coli K-12 is located at genome position 3389430
+The promoter aaeXp of Escherichia coli K-12 has a TSS located at 93 relative position from the gene aaeX
+The promoter aaeXp of Escherichia coli K-12 has a TSS at a A nucleotide
+The sequence of the promoter aaeXp of Escherichia coli K-12 is tcacataatatagataacagcataacagttacgctaatatattaaatatcaatctacagcAatgttgctctcgcccggctt
+The transcription of the transcription unit (TU) aaeXAB is started at the promoter aaeXp of Escherichia coli K-12
+The transcription of the gene aaeX is started at the promoter aaeXp of Escherichia coli K-12
+The transcription factor CRP binds at positions -63.5 relative to the transcriptional start site of the promoter aaeXp of Escherichia coli K-12 to activator it
+The transcription factor CRP activates the transcription of the promoter aaeXp of Escherichia coli K-12
+The transcription factor AaeR activates the transcription of the promoter aaeXp of Escherichia coli K-12
