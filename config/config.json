@@ -1,0 +1,10 @@
+{
+    "db_connection":{
+       "URL":"https://regulondb.ccg.unam.mx/graphql"
+    },
+    "queries":{
+       "main":{
+          "query":""
+       }
+    }
+}

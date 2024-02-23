@@ -103,12 +103,12 @@ if r.status_code == 200:
                                     f"transcribing the {tu['promoter']['name']} "
                                     f"of Escherichia coli K-12 has the evidence "
                                     f"related to the promoter '{citation['evidence']['name']}'")
-                        if citation["publication"] and citation["publication"]["title"]:
+                        if citation["publication"] and citation["publication"]["pmid"]:
                             # 4. The promoter [PROMOTER_NAME] of  Escherichia 
                             # coli K-12 has the reference [citations]
                             phrases.append(f"The promoter {tu['promoter']['name']} "
                                 f"of Escherichia coli K-12 has the reference " 
-                                f"'{citation['publication']['title']}'")
+                                f"'{citation['publication']['pmid']}'")
                     # 5. The Transcription Start Site (TSS) of the 
                     # promoter [PROMOTER_NAME] of Escherichia coli 
                     # K-12 is located at genome position [transcriptionStartSite]
