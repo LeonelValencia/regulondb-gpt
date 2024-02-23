@@ -1,0 +1,10 @@
+{
+   "db_connection": {
+       "URL": "https://regulondb.ccg.unam.mx/graphql"
+   },
+   "queries": {
+       "main": {
+           "query": "\n{\n    getAllOperon{\n    data{\n      operon{\n        name \n        strand\n      }\n      transcriptionUnits{\n        firstGene{\n          distanceToPromoter\n          name\n        }\n        name\n        promoter{      \n          _id\n          name\n          bindsSigmaFactor{ \n            name \n          }\n          boxes{    \n            leftEndPosition\n            rightEndPosition\n            sequence\n          }\n          citations{\n            evidence{\n              name\n            }\n            publication{\n              title \n              pmid\n            }\n          }\n          note\n          regulatorBindingSites{\n            function \n            regulator{\n              name\n            }\n            regulatoryInteractions{\n              relativeCenterPosition  \n            }\n          }\n          sequence\n          transcriptionStartSite{ \n            leftEndPosition\n          }\n        }\n      }\n    }\n  }\n}\n"
+       }
+   }
+}
