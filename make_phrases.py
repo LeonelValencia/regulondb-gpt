@@ -1,7 +1,7 @@
 import requests
 import re
 import pandas as pd
-from get_posicion_relativa import find_relative_position
+from utils import find_relative_position, clean_text
 
 endpoint = "https://regulondb.ccg.unam.mx/graphql"
 
@@ -18,12 +18,20 @@ query = """
           distanceToPromoter
           name
         }
+        genes{
+          name
+        }
         name
         promoter{      
           _id
           name
           bindsSigmaFactor{ 
             name 
+            citations{
+              evidence{
+                name
+              }
+            }
           }
           boxes{    
             leftEndPosition
@@ -88,27 +96,13 @@ if r.status_code == 200:
                                     f"of Escherichia coli K-12 has the evidence "
                                     f"'{citation['evidence']['name']}' linked to "
                                     f"the reference {citation['publication']['pmid']}")
-                            # 14. The -10 and -35 boxes of the 
-                            # [PROMOTER_NAME] of  Escherichia coli K-12 
-                            # has the evidence ["EVIDENCE"]
-                            phrases.append(f"The -10 and -35 boxes of the "
-                                f"{tu['promoter']['name']} of Escherichia coli "
-                                f"K-12 has the evidence '{citation['evidence']['name']}'")
-                            if tu["promoter"]["bindsSigmaFactor"] and tu["promoter"]["bindsSigmaFactor"]["name"]:
-                                # 16. The [Sigma_factor] transcribing 
-                                # the [PROMOTER_NAME] of  Escherichia 
-                                # coli K-12 has the evidence related to 
-                                # the promoter ["EVIDENCE"]
-                                phrases.append(f"The {tu['promoter']['bindsSigmaFactor']['name']} "
-                                    f"transcribing the {tu['promoter']['name']} "
-                                    f"of Escherichia coli K-12 has the evidence "
-                                    f"related to the promoter '{citation['evidence']['name']}'")
+                            
                         if citation["publication"] and citation["publication"]["pmid"]:
                             # 4. The promoter [PROMOTER_NAME] of  Escherichia 
                             # coli K-12 has the reference [citations]
                             phrases.append(f"The promoter {tu['promoter']['name']} "
                                 f"of Escherichia coli K-12 has the reference " 
-                                f"'{citation['publication']['pmid']}'")
+                                f"PMID:{citation['publication']['pmid']}")
                     # 5. The Transcription Start Site (TSS) of the 
                     # promoter [PROMOTER_NAME] of Escherichia coli 
                     # K-12 is located at genome position [transcriptionStartSite]
@@ -121,12 +115,12 @@ if r.status_code == 200:
                         # K-12 has a TSS located at [Position relative to 
                         # start of first gene] relative position from the 
                         # gene [first gene of the TU linked to the promoter]
-                    strand = '-' if data['operon']['strand'] == "reverse" else ''
+                    # strand = '-' if data['operon']['strand'] == "reverse" else ''
                     if tu["firstGene"] and tu["firstGene"]["distanceToPromoter"]:
                         if tu["firstGene"]["distanceToPromoter"] and tu["firstGene"]["name"]:
                             phrases.append(f"The promoter {tu['promoter']['name']} of "
                                 f"Escherichia coli K-12 has a TSS located at "
-                                f"{strand}{tu['firstGene']['distanceToPromoter']} "
+                                f"-{tu['firstGene']['distanceToPromoter']} "
                                 f"relative position from the gene {tu['firstGene']['name']}")
                     # 7. The promoter [PROMOTER_NAME] of Escherichia 
                     # coli K-12 has a TSS at a [A,T,G,C] nucleotide
@@ -191,6 +185,24 @@ if r.status_code == 200:
                         phrases.append(f"The sequence of the -10 box of the "
                             f"promoter {tu['promoter']['name']} of Escherichia "
                             f"coli K-12 is {tu['promoter']['boxes'][0]['sequence']}")
+                    if tu["promoter"]["bindsSigmaFactor"] and tu["promoter"]["bindsSigmaFactor"]["citations"]:
+                        for citation in tu["promoter"]["bindsSigmaFactor"]["citations"]:
+                            if citation["evidence"]:
+                            # 14. The -10 and -35 boxes of the 
+                            # [PROMOTER_NAME] of  Escherichia coli K-12 
+                            # has the evidence ["EVIDENCE"]
+                                phrases.append(f"The -10 and -35 boxes of the "
+                                    f"{tu['promoter']['name']} of Escherichia coli "
+                                    f"K-12 has the evidence '{citation['evidence']['name']}'")
+                                if tu["promoter"]["bindsSigmaFactor"]["name"]:
+                                    # 16. The [Sigma_factor] transcribing 
+                                    # the [PROMOTER_NAME] of  Escherichia 
+                                    # coli K-12 has the evidence related to 
+                                    # the promoter ["EVIDENCE"]
+                                    phrases.append(f"The {tu['promoter']['bindsSigmaFactor']['name']} "
+                                        f"transcribing the {tu['promoter']['name']} "
+                                        f"of Escherichia coli K-12 has the evidence "
+                                        f"related to the promoter '{citation['evidence']['name']}'")
                     # 15. The promoter [PROMOTER_NAME] of  Escherichia 
                     # coli K-12 is transcribed by the [Sigma_Factor_name]
                     if tu["promoter"]["bindsSigmaFactor"] and tu["promoter"]["bindsSigmaFactor"]["name"]:
@@ -211,12 +223,14 @@ if r.status_code == 200:
                         phrases.append(f"The transcription of the transcription "
                             f"unit (TU) {tu['name']} is started at the promoter "
                             f"{tu['promoter']['name']} of Escherichia coli K-12")
-                    if tu["firstGene"] and tu["firstGene"]["name"]:
-                        # 19. The transcription of the gene  [gene_name] is 
-                        # started at the promoter [PROMOTER_NAME] of Escherichia coli K-12
-                        phrases.append(f"The transcription of the gene "
-                            f"{tu['firstGene']['name']} is started at the promoter "
-                            f"{tu['promoter']['name']} of Escherichia coli K-12")
+                    if tu["genes"]:
+                        for gene in tu["genes"]:
+                            if ["name"]:
+                                # 19. The transcription of the gene [gene_name] is 
+                                # started at the promoter [PROMOTER_NAME] of Escherichia coli K-12
+                                phrases.append(f"The transcription of the gene "
+                                    f"{gene['name']} is started at the promoter "
+                                    f"{tu['promoter']['name']} of Escherichia coli K-12")
                     if tu["promoter"]["regulatorBindingSites"]:
                         for regulatorBindingS in tu["promoter"]["regulatorBindingSites"]:
                             for regulatoryInteraction in regulatorBindingS["regulatoryInteractions"]:
@@ -226,12 +240,13 @@ if r.status_code == 200:
                                     # relative to the transcriptional 
                                     # start site of the  promoter [PROMOTER_NAME] 
                                     # of  Escherichia coli K-12  to [activate/repress] it
+                                    function = "activate" if regulatorBindingS["function"] == "activator" else "repress"
                                     phrases.append(f"The transcription factor "
                                         f"{regulatorBindingS['regulator']['name']} binds "
                                         f"at positions {regulatoryInteraction['relativeCenterPosition']} "
                                         f"relative to the transcriptional start "
                                         f"site of the promoter {tu['promoter']['name']} "
-                                        f"of Escherichia coli K-12 to {regulatorBindingS['function']} it")
+                                        f"of Escherichia coli K-12 to {function} it")
                             if regulatorBindingS["function"] == "activator":
                                 # 20. The transcription factor  [TF_NAME] 
                                 # activates the transcription of the 
@@ -249,11 +264,12 @@ if r.status_code == 200:
                                     f"represses the transcription of the promoter "
                                     f"{tu['promoter']['name']} of Escherichia coli K-12")
                     if tu["promoter"]["note"]:
-                      # 22. "The comment related to the [PROMOTER_NAME] 
-                      # promoter of  Escherichia coli K-12 is "[NOTE] "
+                        # 22. "The comment related to the [PROMOTER_NAME] 
+                        # promoter of  Escherichia coli K-12 is "[NOTE] "
+                        note = clean_text(tu["promoter"]["note"])
                         phrases.append(f"The comment related to the "
                             f"{tu['promoter']['name']} promoter of Escherichia "
-                            f"coli K-12 is '{tu['promoter']['note']}'")
+                            f"coli K-12 is '{note}'")
               
     df = pd.DataFrame(phrases, columns=["Phrases"])
     df.to_csv("phrases.csv", index=False)
