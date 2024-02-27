@@ -28,7 +28,7 @@ def generar_frases(data, phrases_template):
             # Generar frases para cada documento resultante del query principal
             generated_phrases = generar_frases_para_plantilla(result, phrase_template)
             phrases.extend(generated_phrases)
-
+    print(phrases)
     return phrases
 
 def generar_frases_para_plantilla(data, phrase_template):
@@ -50,7 +50,6 @@ def generar_frases_para_plantilla(data, phrase_template):
 
             # Agregar la frase generada a la lista
             generated_phrases.append(current_phrase)
-    print(generated_phrases)
     return generated_phrases
 
 def main():
