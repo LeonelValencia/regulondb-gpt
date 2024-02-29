@@ -28,7 +28,6 @@ def generar_frases(data, phrases_template):
             # Generar frases para cada documento resultante del query principal
             generated_phrases = generar_frases_para_plantilla(result, phrase_template)
             phrases.extend(generated_phrases)
-    print(phrases)
     return phrases
 
 def generar_frases_para_plantilla(data, phrase_template):
@@ -56,7 +55,8 @@ def main():
     parser = argparse.ArgumentParser(description="Generador de frases relacionadas a promotores utilizando RegulonDB")
     parser.add_argument("config", help="Archivo de configuración en formato JSON")
     parser.add_argument("frases", help="Archivo de frases tipo template")
-    # parser.add_argument("output", help="Archivo de salida para las frases generadas")
+    parser.add_argument("output", help="Archivo de salida para las frases generadas")
+    parser.add_argument("--error-skip", help="Ignorar errores y continuar con el siguiente documento", action="store_true")
     args = parser.parse_args()
 
     # Cargar configuración y frases
@@ -72,8 +72,8 @@ def main():
         # Generar frases para cada documento resultante
         phrases = generar_frases(r.json(), frases)
         # Guardar frases en un archivo CSV
-        # df = pd.DataFrame(phrases, columns=["Phrases"])
-        # df.to_csv(args.output, index=False)
+        df = pd.DataFrame(phrases, columns=["Phrases"])
+        df.to_csv(args.output, index=False)
     else:
         print(f"Error en la ejecución del query principal. Código de estado: {r.status_code}")
 
