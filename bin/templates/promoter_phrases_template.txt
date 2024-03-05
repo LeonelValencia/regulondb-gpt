@@ -1,1 +1,2 @@
 The name of the promoter with the identifier of RegulonDB database {getAllOperon.data.transcriptionUnits.promoter._id} is {getAllOperon.data.transcriptionUnits.promoter.name}
+The synonym of the {getAllOperon.data.transcriptionUnits.promoter.name} promoter is {getAllOperon.data.transcriptionUnits.promoter.synonyms}

@@ -66,6 +66,8 @@ def revisar_archivo_template(archivo_template):
 
         # Verificar cada línea del archivo
         for i, linea in enumerate(lineas, start=1):
+            print(i)
+            print(linea)
             errores, variables_encontradas, frases_sin_errores = validar_formato_frase(linea, i)
             variables_encontradas_totales.extend(variables_encontradas)
             frases_sin_errores_totales.extend(frases_sin_errores)
@@ -77,8 +79,9 @@ def revisar_archivo_template(archivo_template):
             errores_file.write(f"{error['ErrorType']} | {error['Location']} | {error['Description']}\n")
             
     return set(variables_encontradas_totales), set(frases_sin_errores_totales), len(errores_totales)
+#
 
 # Ejemplo de uso
-# variables_encontradas, frases_sin_errores = revisar_archivo_template("templates\promoter_phrases_template.txt")
-# print("Variables encontradas:", variables_encontradas)
-# print("Frases sin errores:", frases_sin_errores)
+variables_encontradas, frases_sin_errores, nerrores = revisar_archivo_template("templates/promoter_phrases_template.txt")
+print("Variables encontradas:", variables_encontradas)
+print("Frases sin errores:", frases_sin_errores)

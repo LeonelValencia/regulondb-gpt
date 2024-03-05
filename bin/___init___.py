@@ -23,8 +23,6 @@ def ejecutar_query(endpoint, query):
     # Ejecutar la consulta y mostrar la respuesta
     try:
         respuesta_graphql = cliente.execute(consulta_ejemplo)
-        print("Respuesta GraphQL:")
-        print(respuesta_graphql)
         return respuesta_graphql
     except Exception as e:
         print(f"Error al ejecutar la consulta: {e}")
@@ -47,19 +45,52 @@ def generar_frases_para_plantilla(data, phrase_template):
     # Ejemplo de adaptación para una plantilla específica
     id_placeholder = "{getAllOperon.data.transcriptionUnits.promoter._id}"
     name_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.name}"
+    sinonimos_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.synonyms}"
+    strand_placeholder = "{getAllOperon.data.operon.strand}"
+    evidence_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.citations.evidence.name}"
+    pmid_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.citations.publication.pmid}"
+    leftEndPosition_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.transcriptionStartSite.leftEndPosition}"
+    distanceToPromoter_placeholder = "{getAllOperon.data.transcriptionUnits.firstGene.distanceToPromoter}"
+    firstGeneName_placeholder = "{getAllOperon.data.transcriptionUnits.firstGene.distanceToPromoter}"
+    leftEndPosition0_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.boxes[0].leftEndPosition}"
+    rightEndPosition0_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.boxes[0].rightEndPosition}"
+    leftEndPosition1_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.boxes[1].leftEndPosition}"
+    rightEndPosition1_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.boxes[1].rightEndPosition}"
+    sequence10Box_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.boxes[0].sequence}"
+    sequence35Box_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.boxes[1].sequence}"
+    sigmFactorName_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.bindsSigmaFactor.name}"
+    sigmaFactorEvidence_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.bindsSigmaFactor.citations.evidence.name}"
+    sequence_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.sequence}"
+    TUName_placeholder = "{getAllOperon.data.transcriptionUnits.name}"
+    genesName_placeholder = "{getAllOperon.data.transcriptionUnits.genes.name}"
+    transcriptionFactorName_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name}"
+    comment_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.note}"
+    transcriptionFactorCenterPosition_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition}"
+    transcriptionFactorFunction_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function}"
+    evidenceOfBinding_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.regulatorySite.citations.evidence.name}"
+    evidenceOfFunction_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.citations.evidence.name}"
+    RIId_placeholder = "{getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions._id}"
 
     for tu in data["transcriptionUnits"]:
         if tu["promoter"]:
             # Obtener valores específicos del resultado del query
             promoter_id = tu["promoter"]["_id"]
             promoter_name = tu["promoter"]["name"]
+            promoter_synonym = tu["promoter"].get("synonyms", [])
 
             # Reemplazar placeholders en la plantilla
-            current_phrase = phrase_template.replace(id_placeholder, promoter_id)
-            current_phrase = current_phrase.replace(name_placeholder, promoter_name)
-
+            if id_placeholder in phrase_template and promoter_id:
+                phrase_template = phrase_template.replace(name_placeholder, promoter_name)
+                phrase_template = phrase_template.replace(id_placeholder, promoter_id)
+            elif sinonimos_placeholder in phrase_template and promoter_synonym:
+                phrase_template = phrase_template.replace(name_placeholder, promoter_name)
+                phrase_template = phrase_template.replace(sinonimos_placeholder, ", ".join(promoter_synonym))
+            else:
+                continue  # Skip adding the phrase if it doesn't have synonyms and promoter_synonym is empty
+        
             # Agregar la frase generada a la lista
-            generated_phrases.append(current_phrase)
+            generated_phrases.append(phrase_template)
+    print(generated_phrases)
     return generated_phrases
 
 def main():
