@@ -6,6 +6,8 @@ def validar_formato_frase(frase, linea):
     patron_variables = re.compile(r'\{([^}]*)\}')
 
     errores = []
+    frases_sin_errores = []
+    variables = []
 
     # Buscar todas las variables en la frase
     variables_encontradas = patron_variables.findall(frase)
@@ -40,8 +42,11 @@ def validar_formato_frase(frase, linea):
     if len(pila_llaves) > 0:
         errores.append({"ErrorType": "unmatched_bracket", "Location": linea,
                         "Description": f"Unmatched opening bracket '{{' in the template: {frase}. Check for missing closing brackets '}}'."})
-
-    return errores
+    if errores == []:
+        frases_sin_errores.append(frase)
+        variables.extend(variables_encontradas)
+        
+    return errores, variables, frases_sin_errores
 
 def es_variable_valida(variable):
     # Lista de variables válidas
@@ -52,6 +57,8 @@ def es_variable_valida(variable):
 
 def revisar_archivo_template(archivo_template):
     errores_totales = []
+    variables_encontradas_totales = []
+    frases_sin_errores_totales = []
 
     # Leer el archivo línea por línea
     with open(os.path.abspath(archivo_template), 'r') as file:
@@ -59,13 +66,19 @@ def revisar_archivo_template(archivo_template):
 
         # Verificar cada línea del archivo
         for i, linea in enumerate(lineas, start=1):
-            errores = validar_formato_frase(linea, i)
+            errores, variables_encontradas, frases_sin_errores = validar_formato_frase(linea, i)
+            variables_encontradas_totales.extend(variables_encontradas)
+            frases_sin_errores_totales.extend(frases_sin_errores)
             errores_totales.extend(errores)
 
     # Escribir los errores en un archivo de texto
-    with open("errores_template.txt", 'w') as errores_file:
+    with open("error.txt", 'w') as errores_file:
         for error in errores_totales:
             errores_file.write(f"{error['ErrorType']} | {error['Location']} | {error['Description']}\n")
+            
+    return set(variables_encontradas_totales), set(frases_sin_errores_totales), len(errores_totales)
 
 # Ejemplo de uso
-revisar_archivo_template("templates\promoter_phrases_template.txt")
+# variables_encontradas, frases_sin_errores = revisar_archivo_template("templates\promoter_phrases_template.txt")
+# print("Variables encontradas:", variables_encontradas)
+# print("Frases sin errores:", frases_sin_errores)

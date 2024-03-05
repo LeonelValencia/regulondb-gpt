@@ -1,28 +1,39 @@
+from gql import gql, Client
+from gql.transport.requests import RequestsHTTPTransport
+from dotenv import load_dotenv
 import os
 import argparse
 import json
-import requests
 import pandas as pd
-
-def cargar_configuracion(archivo_config):
-    with open(os.path.abspath(archivo_config), 'r') as file:
-        config_data = json.load(file)
-    return config_data
-
-def cargar_frases(archivo_frases):
-    with open(os.path.abspath(archivo_frases), 'r') as file:
-        frases = file.read().splitlines()
-    return frases
+from File_errorLog import revisar_archivo_template
+from regulondb_webservices.build_query import main_build_query
 
 def ejecutar_query(endpoint, query):
-    r = requests.post(endpoint, json={"query": query}, verify=False)
-    return r
+    # Deshabilitar la verificación del certificado SSL
+    transport = RequestsHTTPTransport(
+        url=endpoint,
+        use_json=True,
+        verify=False,  # Agregar esta línea para deshabilitar la verificación del certificado SSL
+    )
+    
+    # Crear un cliente GraphQL con el transporte configurado
+    cliente = Client(transport=transport, fetch_schema_from_transport=True)
+    consulta_ejemplo = gql(query)
+    
+    # Ejecutar la consulta y mostrar la respuesta
+    try:
+        respuesta_graphql = cliente.execute(consulta_ejemplo)
+        print("Respuesta GraphQL:")
+        print(respuesta_graphql)
+        return respuesta_graphql
+    except Exception as e:
+        print(f"Error al ejecutar la consulta: {e}")
 
 def generar_frases(data, phrases_template):
     phrases = []
 
     # Iterar sobre los resultados del query principal
-    for result in data["data"]["getAllOperon"]["data"]:
+    for result in data["getAllOperon"]["data"]:
         # Iterar sobre las plantillas de frases definidas
         for phrase_template in phrases_template:
             # Generar frases para cada documento resultante del query principal
@@ -53,29 +64,39 @@ def generar_frases_para_plantilla(data, phrase_template):
 
 def main():
     parser = argparse.ArgumentParser(description="Generador de frases relacionadas a promotores utilizando RegulonDB")
-    parser.add_argument("config", help="Archivo de configuración en formato JSON")
     parser.add_argument("frases", help="Archivo de frases tipo template")
     parser.add_argument("output", help="Archivo de salida para las frases generadas")
     parser.add_argument("--error-skip", help="Ignorar errores y continuar con el siguiente documento", action="store_true")
     args = parser.parse_args()
+    
+    variables_encontradas, frases_sin_errores, n_errores = revisar_archivo_template(args.frases)
 
-    # Cargar configuración y frases
-    config = cargar_configuracion(args.config)
-    frases = cargar_frases(args.frases)
-
-    # Conectar a la base de datos RegulonDB
-    url = config['db_connection']['URL']
-    query_principal  = config['queries']['main']['query']
-    r = ejecutar_query(url, query_principal)
-
-    if r.status_code == 200:
-        # Generar frases para cada documento resultante
-        phrases = generar_frases(r.json(), frases)
-        # Guardar frases en un archivo CSV
-        df = pd.DataFrame(phrases, columns=["Phrases"])
-        df.to_csv(args.output, index=False)
+    if len(variables_encontradas) == 0 or len(frases_sin_errores) == 0:
+        print("Todas las frases tienen errores. Verifique el archivo de error.txt")
+        return
+    if args.error_skip:
+        if len(frases_sin_errores) > 0 and n_errores > 0:
+            print("Se encontraron algunas frases con errores pero se ignorarán y se generará el archivo de frases.")
+        elif len(frases_sin_errores) > 0 and n_errores == 0:
+            print("No tuviste errores en el archivo de frases")
+            print("Generando frases...")
     else:
-        print(f"Error en la ejecución del query principal. Código de estado: {r.status_code}")
+        if n_errores > 0:
+            print("Se encontraron errores en el archivo de frases, verifique el archivo de error.txt y como no puso el argumento --error-skip, el programa se detendrá.")
+            return
+        else:
+            print("Generando frases...")
+    
+    load_dotenv()
+    # Conectar a la base de datos RegulonDB
+    url = os.environ["DB_CONNECTION_URL"]
+    query = main_build_query(list(variables_encontradas))
+    r = ejecutar_query(url, query)
+    # Generar frases para cada documento resultante
+    phrases = generar_frases(r, list(frases_sin_errores))
+    # Guardar frases en un archivo CSV
+    df = pd.DataFrame(phrases, columns=["Phrases"])
+    df.to_csv(args.output, index=False)
 
 if __name__ == "__main__":
     main()

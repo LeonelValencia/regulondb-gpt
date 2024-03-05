@@ -1,1 +1,0 @@
-Invalid variable name | 1 | Invalid variable name: {}. Valid variable names: {getAllGUs}, {getAllGenes}, {getAllOperon}, {getAllRegulon}
