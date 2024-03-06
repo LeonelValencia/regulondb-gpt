@@ -1,5 +1,4 @@
 import re
-import os
 
 def validar_formato_frase(frase, linea):
     # Patrón para encontrar variables en el formato {variable_name}
@@ -54,34 +53,3 @@ def es_variable_valida(variable):
 
     # Verificar si la variable está en la lista de variables válidas
     return variable in variables_validas
-
-def revisar_archivo_template(archivo_template):
-    errores_totales = []
-    variables_encontradas_totales = []
-    frases_sin_errores_totales = []
-
-    # Leer el archivo línea por línea
-    with open(os.path.abspath(archivo_template), 'r') as file:
-        lineas = file.readlines()
-
-        # Verificar cada línea del archivo
-        for i, linea in enumerate(lineas, start=1):
-            print(i)
-            print(linea)
-            errores, variables_encontradas, frases_sin_errores = validar_formato_frase(linea, i)
-            variables_encontradas_totales.extend(variables_encontradas)
-            frases_sin_errores_totales.extend(frases_sin_errores)
-            errores_totales.extend(errores)
-
-    # Escribir los errores en un archivo de texto
-    with open("error.txt", 'w') as errores_file:
-        for error in errores_totales:
-            errores_file.write(f"{error['ErrorType']} | {error['Location']} | {error['Description']}\n")
-            
-    return set(variables_encontradas_totales), set(frases_sin_errores_totales), len(errores_totales)
-#
-
-# Ejemplo de uso
-variables_encontradas, frases_sin_errores, nerrores = revisar_archivo_template("templates/promoter_phrases_template.txt")
-print("Variables encontradas:", variables_encontradas)
-print("Frases sin errores:", frases_sin_errores)
