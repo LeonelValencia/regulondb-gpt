@@ -5,67 +5,69 @@ from dotenv import load_dotenv
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from regulondb_webservices import connection
 
-def validar_formato_frase(frase, linea):
-    frase = frase.strip()
+def validar_formato_frase(phrase, linea):
+    phrase = phrase.strip()
     # Patrón para encontrar variables en el formato {variable_name}
-    patron_variables = re.compile(r'\{([a-zA-Z0-9_\.]+)\}')
+    variable_pattern = re.compile(r'\{([a-zA-Z0-9_\.]+)\}')
 
-    errores = []
+    errors = []
     isRigth = False
+    paths = []
 
     # Buscar todas las variables en la frase
-    variables_encontradas = patron_variables.findall(frase)
-    if len(variables_encontradas) == 0:
-        errores.append({"ErrorType": "missing_variable", "Location": linea,
-                        "Description": f"Invalid variable format in the template: {frase}. Check for missing or unclosed curly brackets."})
-        return isRigth, errores
+    variables_found = variable_pattern.findall(phrase)
+    if len(variables_found) == 0:
+        errors.append({"ErrorType": "missing_variable", "Location": linea,
+                        "Description": f"Invalid variable format in the template: {phrase}. Check for missing or unclosed curly brackets."})
+        return isRigth, errors, paths
     else:
 
         # Verificar si hay llaves no cerradas o variables faltantes
-        if '{' not in frase or '}' not in frase:
-            errores.append({"ErrorType": "missing_variable", "Location": linea,
-                            "Description": f"Invalid variable format in the template: {frase}. Check for missing or unclosed curly brackets."})
+        if '{' not in phrase or '}' not in phrase:
+            errors.append({"ErrorType": "missing_variable", "Location": linea,
+                            "Description": f"Invalid variable format in the template: {phrase}. Check for missing or unclosed curly brackets."})
 
         # Verificar el orden de las llaves
-        pila_llaves = []
-        for caracter in frase:
-            if caracter == '{':
-                pila_llaves.append('{')
-            elif caracter == '}':
-                if len(pila_llaves) == 0:
-                    errores.append({"ErrorType": "unmatched_bracket", "Location": linea,
-                                    "Description": f"Unmatched closing bracket '}}' in the template: {frase}. Check for missing opening brackets '{{'."})
+        key_stack = []
+        for character in phrase:
+            if character == '{':
+                key_stack.append('{')
+            elif character == '}':
+                if len(key_stack) == 0:
+                    errors.append({"ErrorType": "unmatched_bracket", "Location": linea,
+                                    "Description": f"Unmatched closing bracket '}}' in the template: {phrase}. Check for missing opening brackets '{{'."})
                 else:
-                    elemento_superior = pila_llaves.pop()
-                    if elemento_superior != '{':
-                        errores.append({"ErrorType": "unmatched_bracket", "Location": linea,
-                                        "Description": f"Unmatched closing bracket '}}' in the template: {frase}. Check for missing opening brackets '{{'."})
+                    upper_element = key_stack.pop()
+                    if upper_element != '{':
+                        errors.append({"ErrorType": "unmatched_bracket", "Location": linea,
+                                        "Description": f"Unmatched closing bracket '}}' in the template: {phrase}. Check for missing opening brackets '{{'."})
 
-        if len(pila_llaves) > 0:
-            errores.append({"ErrorType": "unmatched_bracket", "Location": linea,
-                            "Description": f"Unmatched opening bracket '{{' in the template: {frase}. Check for missing closing brackets '}}'."})
+        if len(key_stack) > 0:
+            errors.append({"ErrorType": "unmatched_bracket", "Location": linea,
+                            "Description": f"Unmatched opening bracket '{{' in the template: {phrase}. Check for missing closing brackets '}}'."})
         
-        if len(errores) > 0:
-            return isRigth, errores
+        if len(errors) > 0:
+            return isRigth, errors, paths
         else:
             valid_queries, valid_variables = get_valid_variables()
             # Verificar cada variable encontrada
-            for variable in variables_encontradas:
+            for variable in variables_found:
                 queries = variable.split('.')
                 main_query = queries[0]
                 remaining_query = queries[1:]
                 if not main_query in valid_queries:
-                    errores.append({"ErrorType": "Invalid variable name", "Location": linea,
+                    errors.append({"ErrorType": "Invalid variable name", "Location": linea,
                                     "Description": f"Invalid variable name: {{{variable}}}. Valid query names: {valid_queries}"})
                 for variable in remaining_query:
                     if not variable in valid_variables:
-                        errores.append({"ErrorType": "Invalid variable name", "Location": linea,
+                        errors.append({"ErrorType": "Invalid variable name", "Location": linea,
                                         "Description": f"Invalid variable name: {{{variable}}}. Valid variable names: {set(valid_variables)}"})
-            if len(errores) > 0:
-                return isRigth, errores
+            if len(errors) > 0:
+                return isRigth, errors, paths
             else:
                 isRigth = True
-                return isRigth, errores
+                paths = variables_found
+                return isRigth, errors, paths
 
 def get_valid_variables():
     valid_queries = []
@@ -75,13 +77,13 @@ def get_valid_variables():
     url = os.environ["DB_CONNECTION_URL"]
     query = "{ __schema { types { name fields { name } } } }"
     data = connection.ejecutar_query(url, query)
-    for tipo in data["__schema"]["types"]:
-        if tipo["name"] in ["Query"]:
-            for campo in tipo["fields"]:
-                valid_queries.append(campo["name"])
+    for type in data["__schema"]["types"]:
+        if type["name"] in ["Query"]:
+            for field in type["fields"]:
+                valid_queries.append(field["name"])
         else:
-            valid_variables.append(tipo["name"])
-            if tipo["fields"]:
-                for campo in tipo["fields"]:
-                    valid_variables.append(campo['name'])
+            valid_variables.append(type["name"])
+            if type["fields"]:
+                for field in type["fields"]:
+                    valid_variables.append(field['name'])
     return valid_queries, valid_variables

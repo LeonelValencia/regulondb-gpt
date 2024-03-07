@@ -1,0 +1,1 @@
+unmatched_bracket | 1 | Unmatched closing bracket '}' in the template: The name of the promoter with the identifier of RegulonDB database getAllOperon.data.transcriptionUnits.promoter._id} is {getAllOperon.data.transcriptionUnits.promoter.name}. Check for missing opening brackets '{'.
