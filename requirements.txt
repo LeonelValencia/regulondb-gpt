@@ -3,3 +3,4 @@ pandas
 gql
 requests-toolbelt
 python-dotenv
+biopython
