@@ -101,12 +101,11 @@ boxes_minus35_rightEndPosition = []
 boxes_minus35_leftEndPosition = []
 minus10_sequences = []
 minus35_sequences = []
-bindsSigmaFactor_name_str = []
+bindsSigmaFactor_names = []
 tu_names = []
 notes = []
 citations_evidence_publications = []
 pmids = []
-bindsSigmaFactor_names = []
 citations_evidence_names = []
 genes = []
 regulatorBindingS_regulator_names = []
@@ -192,9 +191,9 @@ if r.status_code == 200:
                         minus10_sequences.append("")
                         minus35_sequences.append("")
                     if tu["promoter"]["bindsSigmaFactor"] and tu["promoter"]["bindsSigmaFactor"]["name"]:
-                        bindsSigmaFactor_name_str.append(tu["promoter"]["bindsSigmaFactor"]["name"])
+                        bindsSigmaFactor_names.append(tu["promoter"]["bindsSigmaFactor"]["name"])
                     else:
-                        bindsSigmaFactor_name_str.append("")
+                        bindsSigmaFactor_names.append("")
                     if tu["name"]:
                         tu_names.append(tu["name"])
                     else:
@@ -207,7 +206,6 @@ if r.status_code == 200:
 
                     citations_evidence_publication_str = []
                     pmid_str = []
-                    bindsSigmaFactor_name_str = []
                     citations_evidence_name_str = []
                     gene_str = []
                     regulatorBindingS_regulator_name_str = []
@@ -226,7 +224,6 @@ if r.status_code == 200:
                         for citation in tu["promoter"]["bindsSigmaFactor"]["citations"]:
                             if citation["evidence"]:
                                 if tu["promoter"]["bindsSigmaFactor"]["name"]:
-                                    bindsSigmaFactor_name_str.append(tu["promoter"]["bindsSigmaFactor"]["name"])
                                     citations_evidence_name_str.append(f"The evidence '{citation['evidence']['name']}'")
                     if tu["genes"]:
                         for gene in tu["genes"]:
@@ -327,13 +324,9 @@ if r.status_code == 200:
                     else:
                         citations_evidence_publications.append("")
                     if pmid_str:
-                        pmids.append(", ".join(pmid_str))
+                        pmids.append(", ".join(set(pmid_str)))
                     else:
                         pmids.append("")
-                    if bindsSigmaFactor_name_str:
-                        bindsSigmaFactor_names.append(", ".join(bindsSigmaFactor_name_str))
-                    else:
-                        bindsSigmaFactor_names.append("")
                     if citations_evidence_name_str:
                         citations_evidence_names.append(", ".join(citations_evidence_name_str))
                     else:
@@ -343,7 +336,7 @@ if r.status_code == 200:
                     else:
                         genes.append("")
                     if regulatorBindingS_regulator_name_str:
-                        regulatorBindingS_regulator_names.append(", ".join(regulatorBindingS_regulator_name_str))
+                        regulatorBindingS_regulator_names.append(", ".join(set(regulatorBindingS_regulator_name_str)))
                     else:
                         regulatorBindingS_regulator_names.append("")
                     if regulatoryInteraction_regulatorySite_sequence_str:
@@ -358,6 +351,35 @@ if r.status_code == 200:
                         regulatorBindingS_functions.append(", ".join(regulatorBindingS_function_str))
                     else:
                         regulatorBindingS_functions.append("")
+    
+    print(len(promoter_ids), "promoters_ids")
+    print(len(promoter_names), "promoter_names")
+    print(len(synonyms), "synonyms")
+    print(len(operon_strands), "operon_strands")
+    print(len(transcription_start_sites), "transcription_start_sites")
+    print(len(tu_firstGene_distanceToPromoters), "tu_firstGene_distanceToPromoters")
+    print(len(tu_firstGene_names), "tu_firstGene_names")
+    print(len(promoter_sequences), "promoter_sequences")
+    print(len(nucleotides), "nucleotides")
+    print(len(relative_positions_minus10), "relative_positions_minus10")
+    print(len(relative_positions_minus35), "relative_positions_minus35")
+    print(len(boxes_minus10_rightEndPosition), "boxes_minus10_rightEndPosition")
+    print(len(boxes_minus10_leftEndPosition), "boxes_minus10_leftEndPosition")
+    print(len(boxes_minus35_rightEndPosition), "boxes_minus35_rightEndPosition")
+    print(len(boxes_minus35_leftEndPosition), "boxes_minus35_leftEndPosition")
+    print(len(minus10_sequences), "minus10_sequences")
+    print(len(minus35_sequences), "minus35_sequences")
+    print(len(bindsSigmaFactor_names), "bindsSigmaFactor_name_str")
+    print(len(tu_names), "tu_names")
+    print(len(notes), "notes")
+    print(len(citations_evidence_publications), "citations_evidence_publications")
+    print(len(pmids), "pmids")
+    print(len(citations_evidence_names), "citations_evidence_names")
+    print(len(genes), "genes")
+    print(len(regulatorBindingS_regulator_names), "regulatorBindingS_regulator_names")
+    print(len(regulatoryInteraction_regulatorySite_sequences), "regulatoryInteraction_regulatorySite_sequences")
+    print(len(regulatoryInteraction_relativeCenterPositions), "regulatoryInteraction_relativeCenterPositions")
+    print(len(regulatorBindingS_functions), "regulatorBindingS_functions")
                         
     d = {'promoter_id': promoter_ids,
             'promoter_name': promoter_names,
@@ -376,18 +398,17 @@ if r.status_code == 200:
             'boxes_minus35_leftEndPosition': boxes_minus35_leftEndPosition,
             'minus10_sequence': minus10_sequences,
             'minus35_sequence': minus35_sequences,
-            'bindsSigmaFactor_name': bindsSigmaFactor_name_str,
+            'bindsSigmaFactor_name': bindsSigmaFactor_names,
             'tu_name': tu_names,
             'note': notes,
             "citations_evidence_publication": citations_evidence_publications,
             "pmid": pmids,
-            "bindsSigmaFactor_name": bindsSigmaFactor_names,
             "citations_evidence_name": citations_evidence_names,
             "genes": genes,
             "regulatorBindingS_regulator_name": regulatorBindingS_regulator_names,
             "regulatoryInteraction_regulatorySite_sequence": regulatoryInteraction_regulatorySite_sequences,
-            "regulatoryInteraction_relativeCenterPosition": regulatoryInteraction_relativeCenterPositions,
-            "regulatorBindingS_function": regulatorBindingS_functions
+            # "regulatoryInteraction_relativeCenterPosition": regulatoryInteraction_relativeCenterPositions,
+            # "regulatorBindingS_function": regulatorBindingS_functions
          }              
     df = pd.DataFrame(data=d)
     df.to_csv("table.tsv", index=False, sep="\t")
