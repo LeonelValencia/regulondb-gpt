@@ -289,55 +289,55 @@ if r.status_code == 200:
                                 promoter_ids.append(tu['promoter']['_id'])
                     if tu["promoter"]["regulatorBindingSites"]:
                         for regulatorBindingS in tu["promoter"]["regulatorBindingSites"]:
-                            for regulatoryInteraction in regulatorBindingS["regulatoryInteractions"]:
-                                if regulatoryInteraction["relativeCenterPosition"] and regulatorBindingS['function']:
-                                    if regulatoryInteraction['regulatorySite']['sequence']:
-                                        # 23. The transcription factor  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} binds at the sequence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.regulatorySite.sequence}, located at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,  to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it 
-                                        function = "activate" if regulatorBindingS["function"] == "activator" else "repress"
-                                        phrases.append(f"The transcription factor "
-                                            f"{regulatorBindingS['regulator']['name']} binds at the sequence "
-                                            f"{regulatoryInteraction['regulatorySite']['sequence']}, located at position "
-                                            f"{regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter "
-                                            f"{tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
-                                        promoter_names.append(tu['promoter']['name'])
-                                        promoter_ids.append(tu['promoter']['_id'])
-                                    if regulatoryInteraction["regulatorySite"]["citations"]:
-                                        for citation in regulatoryInteraction["regulatorySite"]["citations"]:
-                                            if citation["evidence"]:
-                                                function = "activate" if regulatorBindingS["function"] == "activator" else "repress"
-                                                for pcitation in tu["promoter"]["citations"]:
-                                                    if pcitation["publication"] and pcitation["publication"]["pmid"]:
-                                                        if citation['evidence']:
-                                                            # 24 The evidence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.regulatorySite.citations.evidence.name},  linked to the reference {getAllOperon.data.transcriptionUnits.promoter.citations.publication.pmid},  supports  the existing of the Regulatory DNA binding site or  binding of  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} located at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the  promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,   to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it.
-                                                            phrases.append(f"The evidence {citation['evidence']['name']}, linked to the reference {pcitation['publication']['pmid']}, supports the existence of the Regulatory DNA binding site or binding of {regulatorBindingS['regulator']['name']} located at position {regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter {tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
-                                                            promoter_names.append(tu['promoter']['name'])
-                                                            promoter_ids.append(tu['promoter']['_id'])
-                                                # 26. The evidence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.regulatorySite.citations.evidence.name} supports  the existing of the Regulatory DNA binding site or  binding of  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} located at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the  promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,   to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it.
-                                                phrases.append(f"The evidence {citation['evidence']['name']} supports the existence of the Regulatory DNA binding site or binding of {regulatorBindingS['regulator']['name']} located at position {regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter {tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
-                                                promoter_names.append(tu['promoter']['name'])
-                                                promoter_ids.append(tu['promoter']['_id'])
-                                    if regulatoryInteraction["citations"]:
-                                        function = "activate" if regulatorBindingS["function"] == "activator" else "repress"
-                                        for citation in regulatoryInteraction["citations"]:
-                                            if citation["evidence"]:
-                                                for pcitation in tu["promoter"]["citations"]:
-                                                    if pcitation["publication"] and pcitation["publication"]["pmid"]:
-                                                        if citation['evidence']:
-                                                            # 25. The evidence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.citations.evidence.name} linked to the reference {getAllOperon.data.transcriptionUnits.promoter.citations.publication.pmid},  supports  the effect caused by   {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} bound at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the  promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,  to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it.
-                                                            phrases.append(f"The evidence {citation['evidence']['name']} linked to the reference {pcitation['publication']['pmid']}, supports the effect caused by {regulatorBindingS['regulator']['name']} bound at position {regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter {tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
-                                                            promoter_names.append(tu['promoter']['name'])
-                                                            promoter_ids.append(tu['promoter']['_id'])
-                                                # 27. The evidence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.citations.evidence.name} supports  the effect caused by {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} bound at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the  promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,   to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it.
-                                                phrases.append(f"The evidence {citation['evidence']['name']} supports the effect caused by {regulatorBindingS['regulator']['name']} bound at position {regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter {tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
-                                                promoter_names.append(tu['promoter']['name'])
-                                                promoter_ids.append(tu['promoter']['_id'])
-                                # 28. In the publication with PMID:{getAllOperon.data.transcriptionUnits.promoter.citations.publication.pmid} was reported the regulatory interaction, with the identifier of RegulonDB database {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions._id}, between the transcription Factor (TF) {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name}  and the promoter {getAllOperon.data.transcriptionUnits.promoter.name} in which the TF {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} to the promoter.
-                                for pcitation in tu["promoter"]["citations"]:
-                                    if pcitation["publication"] and pcitation["publication"]["pmid"]:
-                                        function = "activate" if regulatorBindingS["function"] == "activator" else "repress"
-                                        phrases.append(f"In the publication with PMID:{pcitation['publication']['pmid']} was reported the regulatory interaction, with the identifier of RegulonDB database {regulatoryInteraction['_id']}, between the transcription Factor (TF) {regulatorBindingS['regulator']['name']} and the promoter {tu['promoter']['name']} in which the TF {function} to the promoter")
-                                        promoter_names.append(tu['promoter']['name'])
-                                        promoter_ids.append(tu['promoter']['_id'])
+                            # for regulatoryInteraction in regulatorBindingS["regulatoryInteractions"]:
+                                # if regulatoryInteraction["relativeCenterPosition"] and regulatorBindingS['function']:
+                                #     if regulatoryInteraction['regulatorySite']['sequence']:
+                                #         # 23. The transcription factor  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} binds at the sequence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.regulatorySite.sequence}, located at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,  to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it 
+                                #         function = "activate" if regulatorBindingS["function"] == "activator" else "repress"
+                                #         phrases.append(f"The transcription factor "
+                                #             f"{regulatorBindingS['regulator']['name']} binds at the sequence "
+                                #             f"{regulatoryInteraction['regulatorySite']['sequence']}, located at position "
+                                #             f"{regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter "
+                                #             f"{tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
+                                #         promoter_names.append(tu['promoter']['name'])
+                                #         promoter_ids.append(tu['promoter']['_id'])
+                                #     if regulatoryInteraction["regulatorySite"]["citations"]:
+                                #         for citation in regulatoryInteraction["regulatorySite"]["citations"]:
+                                #             if citation["evidence"]:
+                                #                 function = "activate" if regulatorBindingS["function"] == "activator" else "repress"
+                                #                 for pcitation in tu["promoter"]["citations"]:
+                                #                     if pcitation["publication"] and pcitation["publication"]["pmid"]:
+                                #                         if citation['evidence']:
+                                #                             # 24 The evidence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.regulatorySite.citations.evidence.name},  linked to the reference {getAllOperon.data.transcriptionUnits.promoter.citations.publication.pmid},  supports  the existing of the Regulatory DNA binding site or  binding of  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} located at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the  promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,   to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it.
+                                #                             phrases.append(f"The evidence {citation['evidence']['name']}, linked to the reference {pcitation['publication']['pmid']}, supports the existence of the Regulatory DNA binding site or binding of {regulatorBindingS['regulator']['name']} located at position {regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter {tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
+                                #                             promoter_names.append(tu['promoter']['name'])
+                                #                             promoter_ids.append(tu['promoter']['_id'])
+                                #                 # 26. The evidence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.regulatorySite.citations.evidence.name} supports  the existing of the Regulatory DNA binding site or  binding of  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} located at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the  promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,   to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it.
+                                #                 phrases.append(f"The evidence {citation['evidence']['name']} supports the existence of the Regulatory DNA binding site or binding of {regulatorBindingS['regulator']['name']} located at position {regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter {tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
+                                #                 promoter_names.append(tu['promoter']['name'])
+                                #                 promoter_ids.append(tu['promoter']['_id'])
+                                #     if regulatoryInteraction["citations"]:
+                                #         function = "activate" if regulatorBindingS["function"] == "activator" else "repress"
+                                #         for citation in regulatoryInteraction["citations"]:
+                                #             if citation["evidence"]:
+                                #                 for pcitation in tu["promoter"]["citations"]:
+                                #                     if pcitation["publication"] and pcitation["publication"]["pmid"]:
+                                #                         if citation['evidence']:
+                                #                             # 25. The evidence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.citations.evidence.name} linked to the reference {getAllOperon.data.transcriptionUnits.promoter.citations.publication.pmid},  supports  the effect caused by   {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} bound at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the  promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,  to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it.
+                                #                             phrases.append(f"The evidence {citation['evidence']['name']} linked to the reference {pcitation['publication']['pmid']}, supports the effect caused by {regulatorBindingS['regulator']['name']} bound at position {regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter {tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
+                                #                             promoter_names.append(tu['promoter']['name'])
+                                #                             promoter_ids.append(tu['promoter']['_id'])
+                                #                 # 27. The evidence {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.citations.evidence.name} supports  the effect caused by {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name} bound at position  {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions.relativeCenterPosition} relative to the transcriptional start site of the  promoter {getAllOperon.data.transcriptionUnits.promoter.name} of  Escherichia coli K-12,   to {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} it.
+                                #                 phrases.append(f"The evidence {citation['evidence']['name']} supports the effect caused by {regulatorBindingS['regulator']['name']} bound at position {regulatoryInteraction['relativeCenterPosition']} relative to the transcriptional start site of the promoter {tu['promoter']['name']} of Escherichia coli K-12, to {function} it")
+                                #                 promoter_names.append(tu['promoter']['name'])
+                                #                 promoter_ids.append(tu['promoter']['_id'])
+                                # # 28. In the publication with PMID:{getAllOperon.data.transcriptionUnits.promoter.citations.publication.pmid} was reported the regulatory interaction, with the identifier of RegulonDB database {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulatoryInteractions._id}, between the transcription Factor (TF) {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.regulator.name}  and the promoter {getAllOperon.data.transcriptionUnits.promoter.name} in which the TF {getAllOperon.data.transcriptionUnits.promoter.regulatorBindingSites.function} to the promoter.
+                                # for pcitation in tu["promoter"]["citations"]:
+                                #     if pcitation["publication"] and pcitation["publication"]["pmid"]:
+                                #         function = "activate" if regulatorBindingS["function"] == "activator" else "repress"
+                                #         phrases.append(f"In the publication with PMID:{pcitation['publication']['pmid']} was reported the regulatory interaction, with the identifier of RegulonDB database {regulatoryInteraction['_id']}, between the transcription Factor (TF) {regulatorBindingS['regulator']['name']} and the promoter {tu['promoter']['name']} in which the TF {function} to the promoter")
+                                #         promoter_names.append(tu['promoter']['name'])
+                                #         promoter_ids.append(tu['promoter']['_id'])
                             if regulatorBindingS["function"] == "activator":
                                 # 20. The transcription factor  [TF_NAME] 
                                 # activates the transcription of the 
@@ -358,22 +358,22 @@ if r.status_code == 200:
                                     f"{tu['promoter']['name']} of Escherichia coli K-12")
                                 promoter_names.append(tu['promoter']['name'])
                                 promoter_ids.append(tu['promoter']['_id'])
-                    if tu["promoter"]["note"]:
-                        # 22. "The comment related to the [PROMOTER_NAME] 
-                        # promoter of  Escherichia coli K-12 is "[NOTE] "
-                        note = clean_text(tu["promoter"]["note"])
-                        phrases.append(f"The comment related to the "
-                            f"{tu['promoter']['name']} promoter of Escherichia "
-                            f"coli K-12 is '{note}'")
-                        promoter_names.append(tu['promoter']['name'])
-                        promoter_ids.append(tu['promoter']['_id'])
+                    # if tu["promoter"]["note"]:
+                    #     # 22. "The comment related to the [PROMOTER_NAME] 
+                    #     # promoter of  Escherichia coli K-12 is "[NOTE] "
+                    #     note = clean_text(tu["promoter"]["note"])
+                    #     phrases.append(f"The comment related to the "
+                    #         f"{tu['promoter']['name']} promoter of Escherichia "
+                    #         f"coli K-12 is '{note}'")
+                    #     promoter_names.append(tu['promoter']['name'])
+                    #     promoter_ids.append(tu['promoter']['_id'])
     
-    d = {'phrase': phrases, 'promoter_name': promoter_names, 'promoter_id': promoter_ids}              
-    df = pd.DataFrame(data=d)
-    df.to_csv("phrases.tsv", index=False, sep="\t")
-    # with open("phrases.txt", "w") as archivo:
-    #     for elemento in phrases:
-    #         archivo.write(elemento + "\n")
+    # d = {'phrase': phrases, 'promoter_name': promoter_names, 'promoter_id': promoter_ids}              
+    # df = pd.DataFrame(data=d)
+    # df.to_csv("phrases.tsv", index=False, sep="\t")
+    with open("promoters_phrases_small.txt", "w") as archivo:
+        for elemento in phrases:
+            archivo.write(elemento + "\n")
     # print(phrases)
 else:
     raise Exception(f"Query failed to run with a {r.status_code}.")
